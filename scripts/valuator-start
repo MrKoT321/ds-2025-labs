@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd $HOME/project/ds-2025-labs/
+
+docker compose down
+
+docker compose up -d

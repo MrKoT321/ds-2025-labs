@@ -1,0 +1,66 @@
+services:
+  redis:
+    container_name: app-redis
+    image: redis:latest
+    command: redis-server --requirepass 1234 --bind 0.0.0.0
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
+  webapp1:
+    container_name: webapp1
+    volumes:
+      - redis_data:/root/.aspnet/DataProtection-Keys
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=1234
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - app-network
+    depends_on:
+      - redis
+
+  webapp2:
+    container_name: webapp2
+    volumes:
+      - redis_data:/root/.aspnet/DataProtection-Keys
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=1234
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - app-network
+    depends_on:
+      - redis
+
+  nginx:
+    container_name: app-nginx
+    image: nginx:latest
+    volumes:
+      - ./nginx/conf/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:5002:5002"
+      - "127.0.0.1:5001:5001"
+    networks:
+      - app-network
+    depends_on:
+      - webapp1
+      - webapp2
+
+volumes:
+  redis_data:
+
+networks:
+  app-network:
