@@ -1,6 +1,5 @@
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using StackExchange.Redis;
 
 namespace Valuator.Calculator;
@@ -37,7 +36,7 @@ public class ValuatorCalculator
             }
         }
         
-        return (double)nonAlphabeticSymbols / text.EnumerateRunes().Count();;
+        return (double)nonAlphabeticSymbols / text.EnumerateRunes().Count();
     }
 
     public bool CheckSimilarity(string newText)

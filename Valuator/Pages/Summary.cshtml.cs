@@ -17,10 +17,12 @@ public class SummaryModel : PageModel
     {
         _logger = logger;
         _redis = redis;
+        Rank = "Загрузка данных...";
+        Similarity = "Загрузка данных...";
     }
 
-    public double Rank { get; set; }
-    public double Similarity { get; set; }
+    public string Rank { get; set; }
+    public string Similarity { get; set; }
 
     public void OnGet(string id)
     {
@@ -30,11 +32,10 @@ public class SummaryModel : PageModel
         string rankKey = "RANK-" + id;
         if (double.TryParse(db.StringGet(rankKey), out double rankValue))
         {
-            Rank = rankValue;
+            Rank = rankValue.ToString();
         }
         string similarityKey = "SIMILARITY-" + id;
         string similarityStr = db.StringGet(similarityKey);
-        Similarity = similarityStr.Equals("True", StringComparison.OrdinalIgnoreCase) ? 1 : 0;
-
+        Similarity = (similarityStr.Equals("True", StringComparison.OrdinalIgnoreCase) ? 1 : 0).ToString();
     }
 }

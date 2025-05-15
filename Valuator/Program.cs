@@ -1,4 +1,5 @@
 using StackExchange.Redis;
+using Valuator.Services;
 
 namespace Valuator;
 
@@ -14,6 +15,12 @@ public class Program
         var redisConfig = builder.Configuration.GetSection("Redis");
         builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
             ConnectionMultiplexer.Connect(redisConfig["ConnectionString"]!));
+        
+        var rabbitSection = builder.Configuration.GetSection("RabbitMQ");
+        var hostName = rabbitSection.GetValue<string>("HostName");
+        var queueName = rabbitSection.GetValue<string>("QueueName");
+
+        builder.Services.AddSingleton<IRabbitMqService>(provider => new RabbitMqService(queueName!, hostName!));
 
         var app = builder.Build();
 
