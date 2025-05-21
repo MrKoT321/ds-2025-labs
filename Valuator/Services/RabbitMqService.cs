@@ -25,7 +25,6 @@ namespace Valuator.Services
 
         private async Task ProduceAsync(CancellationToken ct, string message)
         {
-            // Установка соединения с RabbitMQ по адресу localhost:5672
             ConnectionFactory factory = new()
             {
                 HostName = HostName
@@ -35,7 +34,6 @@ namespace Valuator.Services
 
             await DeclareTopologyAsync(channel, ct);
 
-            // Отправка сообщения ежесекундно в цикле.
             byte[] body = Encoding.UTF8.GetBytes(message);
 
             await channel.BasicPublishAsync(
@@ -66,7 +64,8 @@ namespace Valuator.Services
                 queue: QueueName,
                 exchange: QueueName,
                 routingKey: "",
-                cancellationToken: ct);
+                cancellationToken: ct
+            );
         }
     }
 }

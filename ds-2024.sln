@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valuator.Tests", "Valuator.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RankCalculator", "RankCalculator\RankCalculator.csproj", "{CA9DAB25-F654-4640-B85E-C4B242AD71A9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EventsLogger", "EventsLogger", "{2DC643F5-6C1E-481E-B32F-1ACE6100AE00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventsLogger", "EventsLogger\EventsLogger.csproj", "{64FEEBE8-FBF8-4763-9C84-F9B95ED57871}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +35,10 @@ Global
 		{CA9DAB25-F654-4640-B85E-C4B242AD71A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA9DAB25-F654-4640-B85E-C4B242AD71A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA9DAB25-F654-4640-B85E-C4B242AD71A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64FEEBE8-FBF8-4763-9C84-F9B95ED57871}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64FEEBE8-FBF8-4763-9C84-F9B95ED57871}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64FEEBE8-FBF8-4763-9C84-F9B95ED57871}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64FEEBE8-FBF8-4763-9C84-F9B95ED57871}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -40,5 +48,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FF59A283-071D-40F0-8208-0A0C227AA36F} = {D03B41E6-1A29-4344-9E38-067972992B93}
+		{64FEEBE8-FBF8-4763-9C84-F9B95ED57871} = {2DC643F5-6C1E-481E-B32F-1ACE6100AE00}
 	EndGlobalSection
 EndGlobal

@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using StackExchange.Redis;
 
 namespace Valuator.Pages;
+
 public class SummaryModel : PageModel
 {
+    private const string NotCompleteAssessment = "Оценка содержания не завершена";
+    private const int MaxAttempts = 5;
     private readonly ILogger<SummaryModel> _logger;
     private readonly IConnectionMultiplexer _redis;
 
@@ -17,8 +14,8 @@ public class SummaryModel : PageModel
     {
         _logger = logger;
         _redis = redis;
-        Rank = "Загрузка данных...";
-        Similarity = "Загрузка данных...";
+        Rank = NotCompleteAssessment;
+        Similarity = NotCompleteAssessment;
     }
 
     public string Rank { get; set; }
@@ -29,13 +26,25 @@ public class SummaryModel : PageModel
         _logger.LogDebug(id);
         IDatabase db = _redis.GetDatabase();
 
+        int attemptsCount = 0;
         string rankKey = "RANK-" + id;
-        if (double.TryParse(db.StringGet(rankKey), out double rankValue))
+
+        while (attemptsCount < MaxAttempts || !db.KeyExists(rankKey))
         {
-            Rank = rankValue.ToString();
+            string? rankValue = db.StringGet(rankKey);
+            if (!string.IsNullOrEmpty(rankValue))
+            {
+                Rank = rankValue;
+            }
+
+            attemptsCount++;
         }
+
         string similarityKey = "SIMILARITY-" + id;
-        string similarityStr = db.StringGet(similarityKey);
-        Similarity = (similarityStr.Equals("True", StringComparison.OrdinalIgnoreCase) ? 1 : 0).ToString();
+        string? similarityStr = db.StringGet(similarityKey);
+        
+        Similarity = string.IsNullOrEmpty(similarityStr)
+            ? "Не удалось получить результат"
+            : similarityStr.Equals("True", StringComparison.OrdinalIgnoreCase) ? "1" : "0";
     }
 }
