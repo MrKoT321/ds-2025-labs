@@ -6,6 +6,7 @@ namespace Valuator.Pages;
 public class SummaryModel : PageModel
 {
     private const string NotCompleteAssessment = "Оценка содержания не завершена";
+    private const string FailedToCompleteAssessment = "Не удалось получить результат";
     private const int MaxAttempts = 5;
     private readonly ILogger<SummaryModel> _logger;
     private readonly IConnectionMultiplexer _redis;
@@ -29,7 +30,7 @@ public class SummaryModel : PageModel
         int attemptsCount = 0;
         string rankKey = "RANK-" + id;
 
-        while (attemptsCount < MaxAttempts || !db.KeyExists(rankKey))
+        while (attemptsCount < MaxAttempts && Rank == NotCompleteAssessment)
         {
             string? rankValue = db.StringGet(rankKey);
             if (!string.IsNullOrEmpty(rankValue))
@@ -44,7 +45,8 @@ public class SummaryModel : PageModel
         string? similarityStr = db.StringGet(similarityKey);
         
         Similarity = string.IsNullOrEmpty(similarityStr)
-            ? "Не удалось получить результат"
+            ? FailedToCompleteAssessment
             : similarityStr.Equals("True", StringComparison.OrdinalIgnoreCase) ? "1" : "0";
+        Rank = Rank == NotCompleteAssessment ? FailedToCompleteAssessment : Rank;
     }
 }

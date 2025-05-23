@@ -34,12 +34,17 @@ public class IndexModel : PageModel
 
         ValuatorCalculator calculator = new ValuatorCalculator(_redis);
         string similarityKey = "SIMILARITY-" + id;
-        db.StringSet(similarityKey, calculator.CheckSimilarity(text).ToString());
+        bool isSimilar = calculator.CheckSimilarity(text);
+        db.StringSet(similarityKey, isSimilar.ToString());
 
         string textKey = "TEXT-" + id;
-        db.StringSet(textKey, text);
+        await db.StringSetAsync(textKey, text);
 
-        await _rabbitMqService.SendMessage(id);
+        await _rabbitMqService.PublishSimilarityCalculatedEventAsync(id, isSimilar);
+        
+        await _rabbitMqService.PublishMessageAsync("valuator.processing.rank" ,id);
+        
+        Console.WriteLine($"text: {text}");
 
         return Redirect($"summary?id={id}");
     }

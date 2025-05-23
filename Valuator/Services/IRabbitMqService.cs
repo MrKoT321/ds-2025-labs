@@ -1,7 +1,7 @@
-namespace Valuator.Services
+namespace Valuator.Services;
+
+public interface IRabbitMqService
 {
-    public interface IRabbitMqService
-    {
-        Task SendMessage(string message);
-    }
+    Task PublishMessageAsync(string queueName, string message);
+    Task PublishSimilarityCalculatedEventAsync(string textId, bool isSimilar);
 }

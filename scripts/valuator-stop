@@ -9,4 +9,6 @@ pushd "$PROJECT_DIR"
 
 docker compose down
 
+docker rmi -f ds-2025-labs-webapp1 ds-2025-labs-webapp2 ds-2025-labs-rankcalculator ds-2025-labs-eventslogger1 ds-2025-labs-eventslogger2
+
 popd

@@ -2,7 +2,6 @@ services:
   redis:
     container_name: app-redis
     image: redis:8.0-rc1
-    command: redis-server --requirepass 1234 --bind 0.0.0.0
     ports:
       - "6379:6379"
     healthcheck:
@@ -17,9 +16,7 @@ services:
       - app-network
         
   rankcalculator:
-    image: rankcalculator
-    deploy:
-      replicas: 2
+    container_name: rank-calculator
     build:
       context: .
       dockerfile: RankCalculator/Dockerfile
@@ -28,6 +25,42 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+    networks:
+      - app-network
+        
+  eventslogger1:
+    container_name: events-logger1
+    volumes:
+      - events_logger_data:/var/lib/logger
+    build:
+      context: .
+      dockerfile: EventsLogger/Dockerfile
+    environment:
+      - INSTANCE_ID=logger1
+    depends_on:
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
+        
+  eventslogger2:
+    container_name: events-logger2
+    volumes:
+      - events_logger_data:/var/lib/logger
+    build:
+      context: .
+      dockerfile: EventsLogger/Dockerfile
+    environment:
+      - INSTANCE_ID=logger2
+    depends_on:
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
 
   webapp1:
     container_name: webapp1
@@ -44,7 +77,10 @@ services:
     networks:
       - app-network
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   webapp2:
     container_name: webapp2
@@ -61,12 +97,17 @@ services:
     networks:
       - app-network
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
         
   rabbitmq:
-    image: rabbitmq:management
+    image: rabbitmq:3.13.7
+    container_name: rabbitmq
+    hostname: rabbitmq
     ports:
-      - "15672:15672"
+      - '15672:15672'
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:
@@ -74,6 +115,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network 
 
   nginx:
     container_name: app-nginx
@@ -91,6 +134,7 @@ services:
 volumes:
   redis_data:
   rabbitmq_data:
+  events_logger_data:
 
 networks:
   app-network:

@@ -1,71 +1,33 @@
-using RabbitMQ.Client;
 using System.Text;
+using System.Text.Json;
+using RabbitMQ.Client;
 
-namespace Valuator.Services
+namespace Valuator.Services;
+
+public class RabbitMqService(IConnection rabbitMqConnection) : IRabbitMqService
 {
-    public class RabbitMqService : IRabbitMqService
+    private const string ExchangeName = "events.logger";
+    
+    public async Task PublishMessageAsync(string queueName, string message)
     {
-        private string QueueName { get; set; }
-        private string HostName { get; set; }
+        await using var channel = await rabbitMqConnection.CreateChannelAsync();
+        await channel.QueueDeclareAsync(queueName, true, false, false);
 
-        public RabbitMqService(string queueName, string hostName)
-        {
-            QueueName = queueName;
-            HostName = hostName;
-        }
+        var body = Encoding.UTF8.GetBytes(message);
+        await channel.BasicPublishAsync("", queueName, body);
 
-        public async Task SendMessage(string message)
-        {
-            CancellationTokenSource cts = new();
-            Task produceTask = ProduceAsync(cts.Token, message);
+        await Task.CompletedTask;
+    }
 
-            await produceTask;
-            cts.Cancel();
-        }
+    public async Task PublishSimilarityCalculatedEventAsync(string textId, bool isSimilar)
+    {
+        await using var channel = await rabbitMqConnection.CreateChannelAsync();
+        await channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Fanout, true);
 
-        private async Task ProduceAsync(CancellationToken ct, string message)
-        {
-            ConnectionFactory factory = new()
-            {
-                HostName = HostName
-            };
-            await using IConnection connection = await factory.CreateConnectionAsync(ct);
-            await using IChannel channel = await connection.CreateChannelAsync(null, ct);
+        var eventData = new { EventType = EventType.SimilarityCalculated.ToString(), TextId = textId, Similarity = isSimilar};
+        var eventJson = JsonSerializer.Serialize(eventData);
+        var body = Encoding.UTF8.GetBytes(eventJson);
 
-            await DeclareTopologyAsync(channel, ct);
-
-            byte[] body = Encoding.UTF8.GetBytes(message);
-
-            await channel.BasicPublishAsync(
-                exchange: "",
-                routingKey: QueueName,
-                mandatory: false,
-                body: body
-            );
-
-            await connection.CloseAsync(ct);
-        }
-
-        private async Task DeclareTopologyAsync(IChannel channel, CancellationToken ct)
-        {
-            await channel.ExchangeDeclareAsync(
-                exchange: QueueName,
-                type: ExchangeType.Direct,
-                cancellationToken: ct
-            );
-            await channel.QueueDeclareAsync(
-                queue: QueueName,
-                durable: true,
-                exclusive: false,
-                autoDelete: false,
-                cancellationToken: ct
-            );
-            await channel.QueueBindAsync(
-                queue: QueueName,
-                exchange: QueueName,
-                routingKey: "",
-                cancellationToken: ct
-            );
-        }
+        await channel.BasicPublishAsync(ExchangeName, EventType.SimilarityCalculated.ToString(), body);
     }
 }

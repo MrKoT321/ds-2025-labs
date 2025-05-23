@@ -4,11 +4,15 @@ WORKDIR /source
 COPY *.sln . 
 COPY Valuator/*.csproj ./Valuator/
 COPY Valuator.Tests/*.csproj ./Valuator.Tests/
+COPY RankCalculator/*.csproj ./RankCalculator/
+COPY EventsLogger/*.csproj ./EventsLogger/
 
 RUN dotnet restore
 
 COPY Valuator/. ./Valuator/
 COPY Valuator.Tests/. ./Valuator.Tests/
+COPY RankCalculator/ ./RankCalculator/
+COPY EventsLogger/. ./EventsLogger/
 
 RUN dotnet publish -c release -o /app
 
@@ -25,4 +29,5 @@ RUN chmod +x /app/init-redis.sh
 COPY --from=build /app ./
 
 EXPOSE 8080
-ENTRYPOINT ["/bin/bash", "-c", "/app/init-redis.sh && dotnet Valuator.dll"]
+#ENTRYPOINT ["/bin/bash", "-c", "/app/init-redis.sh && dotnet Valuator.dll"]
+ENTRYPOINT ["dotnet", "Valuator.dll"]

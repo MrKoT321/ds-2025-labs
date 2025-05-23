@@ -2,73 +2,94 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using StackExchange.Redis;
 using System.Text;
+using System.Text.Json;
 
 class Program
 {
-    private const string QueueName = "valuator.processing.rank1";
-    private const string HostName = "localhost:6379";
+    enum EventType
+    {
+        RankCalculated,
+    }
 
-    private static ConnectionMultiplexer _redis = ConnectionMultiplexer.Connect(HostName);
+    private const string QueueName = "valuator.processing.rank";
+    private const string ExchangeName = "events.logger";
+    private const string RedisConnectionString = "redis:6379";
+
+    private static ConnectionMultiplexer? _redis;
 
     public static async Task Main(string[] args)
     {
+        _redis = await ConnectionMultiplexer.ConnectAsync(RedisConnectionString);
+
         ConnectionFactory factory = new ConnectionFactory
         {
-            HostName = "localhost",
+            HostName = "rabbitmq",
         };
         await using IConnection connection = await factory.CreateConnectionAsync();
         await using IChannel channel = await connection.CreateChannelAsync();
 
         await DeclareTopologyAsync(channel);
-        string consumerTag = await RunConsumer(channel);
+        await RunConsumer(channel);
 
-        Console.WriteLine("Press Enter to exit");
-        Console.ReadLine();
-
-        await channel.BasicCancelAsync(consumerTag);
+        await Task.Delay(Timeout.Infinite);
     }
 
-    private static async Task<string> RunConsumer(IChannel channel)
+    private static async Task RunConsumer(IChannel channel)
     {
         AsyncEventingBasicConsumer consumer = new(channel);
-        consumer.ReceivedAsync += (_, eventArgs) => ConsumeAsync(channel, eventArgs);
-        return await channel.BasicConsumeAsync(
+        consumer.ReceivedAsync += async (_, eventArgs) => await ConsumeAsync(channel, eventArgs);
+
+        await channel.BasicConsumeAsync(
             queue: QueueName,
             autoAck: false,
             consumer: consumer
         );
+
+        Console.WriteLine("Consumer is now consuming from queue...");
     }
 
     private static async Task ConsumeAsync(IChannel channel, BasicDeliverEventArgs eventArgs)
     {
+        await CustomDelay();
+        
+        Console.WriteLine($"Start processing: {Encoding.UTF8.GetString(eventArgs.Body.ToArray())}");
         string id = Encoding.UTF8.GetString(eventArgs.Body.ToArray());
-        Console.WriteLine($"Consuming: {id} from subject {eventArgs.Exchange}");
 
-        string text = GetTextFromRedis(id);
+        string text = await GetTextFromRedis(id);
         double rank = CalculateRank(text);
-        SetRankInRedis(id, rank);
+        await SetRankInRedis(id, rank);
+
+        await PublishRankCalculatedEventAsync(channel, id, rank);
 
         await channel.BasicAckAsync(eventArgs.DeliveryTag, false);
     }
 
-    private static string GetTextFromRedis(string id)
+    private static async Task<string> GetTextFromRedis(string id)
     {
-        IDatabase redisDatabase = _redis.GetDatabase();
-        string textKey = "TEXT-" + id;
-        RedisValue result = redisDatabase.StringGet(textKey);
+        RedisValue result = await _redis.GetDatabase().StringGetAsync("TEXT-" + id);
         return result.ToString();
     }
 
-    private static void SetRankInRedis(string id, double rank)
+    private static async Task SetRankInRedis(string id, double rank)
     {
-        IDatabase redisDatabase = _redis.GetDatabase();
-        string rankKey = "RANK-" + id;
-        redisDatabase.StringSet(rankKey, rank.ToString());
+        await _redis.GetDatabase().StringSetAsync("RANK-" + id, rank.ToString());
     }
 
-    /// <summary>
-    ///  Определяет топологию: queue -> consumer.
-    /// </summary>
+    private static async Task PublishRankCalculatedEventAsync(IChannel channel, string textId, double rank)
+    {
+        var eventData = new { EventType = EventType.RankCalculated.ToString(), TextId = textId, Rank = rank };
+        var eventJson = JsonSerializer.Serialize(eventData);
+        var eventBody = Encoding.UTF8.GetBytes(eventJson);
+
+        await channel.BasicPublishAsync(
+            exchange: ExchangeName,
+            routingKey: EventType.RankCalculated.ToString(),
+            body: eventBody
+        );
+        
+        Console.WriteLine("Event published");
+    }
+
     private static async Task DeclareTopologyAsync(IChannel channel)
     {
         await channel.QueueDeclareAsync(
@@ -77,6 +98,19 @@ class Program
             exclusive: false,
             autoDelete: false
         );
+
+        await channel.ExchangeDeclareAsync(
+            exchange: ExchangeName,
+            type: ExchangeType.Fanout,
+            durable: true
+        );
+    }
+
+    private static async Task CustomDelay()
+    {
+        TimeSpan interval = TimeSpan.FromSeconds(new Random().Next(3, 15));
+        Console.WriteLine($"Waiting {interval}");
+        await Task.Delay(interval);
     }
 
     private static double CalculateRank(string text)
