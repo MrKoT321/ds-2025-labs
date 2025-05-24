@@ -1,11 +1,41 @@
 ﻿@page
 @model Valuator.Pages.SummaryModel
 @{
+    bool isRankReady = Model.Rank != SummaryModel.NotCompleteAssessment;
 }
 
 @{
     ViewData["Title"] = "Оценка содержания";
 }
 
-<p>Оценка содержания: @Model.Rank</p>
-<p>Плагиат: @Model.Similarity</p>
+<p id="rank">Оценка содержания: @Model.Rank</p>
+<p id="similarity">Плагиат: @Model.Similarity</p>
+
+@section Scripts
+{
+    @if (!isRankReady)
+    {
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+        <script>
+            const id = "@Model.Id"
+
+            const hubConnection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5003/rankCalculated").build()
+
+            hubConnection.on("RankCalculated", function (data) {
+                console.log(data, id)
+                if (data.textId === id) {
+                    document.getElementById("rank").innerHTML = "Оценка содержания: " + data.rank
+                    hubConnection.stop()
+                }
+            });
+
+            hubConnection.start()
+                .then(function () {
+                    console.log("Waiting Rank value")
+                })
+                .catch(function (err) {
+                    return console.error(err.toString())
+                });
+        </script>
+    }
+}

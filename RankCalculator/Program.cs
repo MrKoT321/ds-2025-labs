@@ -3,8 +3,12 @@ using RabbitMQ.Client.Events;
 using StackExchange.Redis;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.SignalR;
+using RankCalculator.Hubs;
 
-class Program
+namespace RankCalculator;
+
+public class Program
 {
     enum EventType
     {
@@ -19,6 +23,8 @@ class Program
 
     public static async Task Main(string[] args)
     {
+        var builder = GetAppBuilder(args);
+
         _redis = await ConnectionMultiplexer.ConnectAsync(RedisConnectionString);
 
         ConnectionFactory factory = new ConnectionFactory
@@ -28,16 +34,37 @@ class Program
         await using IConnection connection = await factory.CreateConnectionAsync();
         await using IChannel channel = await connection.CreateChannelAsync();
 
+        var app = builder.Build();
+        var hubContext = app.Services.GetRequiredService<IHubContext<RankHub>>();
+        
+        app.MapHub<RankHub>("/rankCalculated");
+        app.UseCors();
+        
         await DeclareTopologyAsync(channel);
-        await RunConsumer(channel);
+        await RunConsumer(channel, hubContext);
 
+        await app.RunAsync("http://0.0.0.0:5003");
         await Task.Delay(Timeout.Infinite);
     }
 
-    private static async Task RunConsumer(IChannel channel)
+    private static WebApplicationBuilder GetAppBuilder(string[] args)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddCors(options =>
+            options.AddDefaultPolicy(policy =>
+                policy.WithOrigins("http://localhost:8080").AllowAnyHeader().AllowAnyMethod().AllowCredentials()
+            )
+        );
+        builder.Services.AddSignalR();
+
+        return builder;
+    }
+
+    private static async Task RunConsumer(IChannel channel, IHubContext<RankHub> hubContext)
     {
         AsyncEventingBasicConsumer consumer = new(channel);
-        consumer.ReceivedAsync += async (_, eventArgs) => await ConsumeAsync(channel, eventArgs);
+        consumer.ReceivedAsync += async (_, eventArgs) => await ConsumeAsync(channel, hubContext, eventArgs);
 
         await channel.BasicConsumeAsync(
             queue: QueueName,
@@ -48,10 +75,10 @@ class Program
         Console.WriteLine("Consumer is now consuming from queue...");
     }
 
-    private static async Task ConsumeAsync(IChannel channel, BasicDeliverEventArgs eventArgs)
+    private static async Task ConsumeAsync(IChannel channel, IHubContext<RankHub> hubContext, BasicDeliverEventArgs eventArgs)
     {
         await CustomDelay();
-        
+
         Console.WriteLine($"Start processing: {Encoding.UTF8.GetString(eventArgs.Body.ToArray())}");
         string id = Encoding.UTF8.GetString(eventArgs.Body.ToArray());
 
@@ -59,7 +86,7 @@ class Program
         double rank = CalculateRank(text);
         await SetRankInRedis(id, rank);
 
-        await PublishRankCalculatedEventAsync(channel, id, rank);
+        await PublishRankCalculatedEventAsync(channel, hubContext, id, rank);
 
         await channel.BasicAckAsync(eventArgs.DeliveryTag, false);
     }
@@ -75,7 +102,7 @@ class Program
         await _redis.GetDatabase().StringSetAsync("RANK-" + id, rank.ToString());
     }
 
-    private static async Task PublishRankCalculatedEventAsync(IChannel channel, string textId, double rank)
+    private static async Task PublishRankCalculatedEventAsync(IChannel channel, IHubContext<RankHub> hubContext, string textId, double rank)
     {
         var eventData = new { EventType = EventType.RankCalculated.ToString(), TextId = textId, Rank = rank };
         var eventJson = JsonSerializer.Serialize(eventData);
@@ -87,6 +114,8 @@ class Program
             body: eventBody
         );
         
+        await hubContext.Clients.All.SendAsync("RankCalculated", new { TextId = textId, Rank = rank });
+
         Console.WriteLine("Event published");
     }
 

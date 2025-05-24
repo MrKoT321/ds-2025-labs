@@ -1,5 +1,4 @@
 using RabbitMQ.Client;
-using RankCalculator.Hub;
 using StackExchange.Redis;
 using Valuator.Services;
 
@@ -13,18 +12,17 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddRazorPages();
-        builder.Services.AddSignalR();
 
         var redisConfig = builder.Configuration.GetSection("Redis");
         builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
             ConnectionMultiplexer.Connect(redisConfig["ConnectionString"]!));
-        
+
         var rabbitSection = builder.Configuration.GetSection("RabbitMQ");
         var hostName = rabbitSection.GetValue<string>("HostName");
         var factory = new ConnectionFactory { HostName = hostName! };
         var rabbitMqConnection = await factory.CreateConnectionAsync();
         builder.Services.AddSingleton(rabbitMqConnection);
-        
+
         builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 
         var app = builder.Build();
@@ -43,8 +41,6 @@ public class Program
         app.UseAuthorization();
 
         app.MapRazorPages();
-        
-        app.MapHub<RankHub>("/chat");
 
         app.Run();
     }

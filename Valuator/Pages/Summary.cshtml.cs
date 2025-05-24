@@ -5,9 +5,7 @@ namespace Valuator.Pages;
 
 public class SummaryModel : PageModel
 {
-    private const string NotCompleteAssessment = "Оценка содержания не завершена";
-    private const string FailedToCompleteAssessment = "Не удалось получить результат";
-    private const int MaxAttempts = 5;
+    public const string NotCompleteAssessment = "в процессе...";
     private readonly ILogger<SummaryModel> _logger;
     private readonly IConnectionMultiplexer _redis;
 
@@ -21,32 +19,29 @@ public class SummaryModel : PageModel
 
     public string Rank { get; set; }
     public string Similarity { get; set; }
+    public string Id { get; private set; }
 
     public void OnGet(string id)
     {
+        Id = id;
+
         _logger.LogDebug(id);
         IDatabase db = _redis.GetDatabase();
-
-        int attemptsCount = 0;
-        string rankKey = "RANK-" + id;
-
-        while (attemptsCount < MaxAttempts && Rank == NotCompleteAssessment)
-        {
-            string? rankValue = db.StringGet(rankKey);
-            if (!string.IsNullOrEmpty(rankValue))
-            {
-                Rank = rankValue;
-            }
-
-            attemptsCount++;
-        }
 
         string similarityKey = "SIMILARITY-" + id;
         string? similarityStr = db.StringGet(similarityKey);
         
-        Similarity = string.IsNullOrEmpty(similarityStr)
-            ? FailedToCompleteAssessment
-            : similarityStr.Equals("True", StringComparison.OrdinalIgnoreCase) ? "1" : "0";
-        Rank = Rank == NotCompleteAssessment ? FailedToCompleteAssessment : Rank;
+        string rankKey = "RANK-" + id;
+        string? rankValue = db.StringGet(rankKey);
+
+        if (!string.IsNullOrEmpty(similarityStr))
+        {
+            Similarity = similarityStr.Equals("True", StringComparison.OrdinalIgnoreCase) ? "1" : "0";
+        }
+
+        if (!string.IsNullOrEmpty(rankValue))
+        {
+            Rank = rankValue;
+        }
     }
 }

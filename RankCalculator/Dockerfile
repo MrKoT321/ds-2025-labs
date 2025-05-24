@@ -1,21 +1,21 @@
-﻿FROM mcr.microsoft.com/dotnet/runtime:8.0 AS base
-USER $APP_UID
+﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+WORKDIR /source
+
+COPY *.sln ./
+COPY ./RankCalculator/*.csproj ./RankCalculator/
+
+RUN dotnet restore RankCalculator/RankCalculator.csproj
+
+COPY ./RankCalculator/ ./RankCalculator/
+COPY ./RankCalculator/appsettings*.json ./RankCalculator/
+
+RUN dotnet publish RankCalculator/RankCalculator.csproj -c release -o /app
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["RankCalculator/RankCalculator.csproj", "RankCalculator/"]
-RUN dotnet restore "RankCalculator/RankCalculator.csproj"
-COPY . .
-WORKDIR "/src/RankCalculator"
-RUN dotnet build "RankCalculator.csproj" -c $BUILD_CONFIGURATION -o /app/build
+COPY --from=build /app .
+COPY --from=build /source/RankCalculator/appsettings*.json .
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "RankCalculator.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "RankCalculator.dll"]
