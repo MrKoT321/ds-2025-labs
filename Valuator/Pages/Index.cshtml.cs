@@ -41,9 +41,9 @@ public class IndexModel : PageModel
         await db.StringSetAsync(textKey, text);
 
         await _rabbitMqService.PublishSimilarityCalculatedEventAsync(id, isSimilar);
-        
-        await _rabbitMqService.PublishMessageAsync("valuator.processing.rank" ,id);
-        
+
+        await _rabbitMqService.PublishMessageAsync("valuator.processing.rank", id);
+
         Console.WriteLine($"text: {text}");
 
         return Redirect($"summary?id={id}");

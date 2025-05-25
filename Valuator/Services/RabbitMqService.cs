@@ -7,7 +7,7 @@ namespace Valuator.Services;
 public class RabbitMqService(IConnection rabbitMqConnection) : IRabbitMqService
 {
     private const string ExchangeName = "events.logger";
-    
+
     public async Task PublishMessageAsync(string queueName, string message)
     {
         await using var channel = await rabbitMqConnection.CreateChannelAsync();
@@ -24,7 +24,10 @@ public class RabbitMqService(IConnection rabbitMqConnection) : IRabbitMqService
         await using var channel = await rabbitMqConnection.CreateChannelAsync();
         await channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Fanout, true);
 
-        var eventData = new { EventType = EventType.SimilarityCalculated.ToString(), TextId = textId, Similarity = isSimilar};
+        var eventData = new
+        {
+            EventType = EventType.SimilarityCalculated.ToString(), TextId = textId, Similarity = isSimilar
+        };
         var eventJson = JsonSerializer.Serialize(eventData);
         var body = Encoding.UTF8.GetBytes(eventJson);
 

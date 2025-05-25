@@ -36,10 +36,10 @@ public class Program
 
         var app = builder.Build();
         var hubContext = app.Services.GetRequiredService<IHubContext<RankHub>>();
-        
+
         app.MapHub<RankHub>("/rankCalculated");
         app.UseCors();
-        
+
         await DeclareTopologyAsync(channel);
         await RunConsumer(channel, hubContext);
 
@@ -75,7 +75,8 @@ public class Program
         Console.WriteLine("Consumer is now consuming from queue...");
     }
 
-    private static async Task ConsumeAsync(IChannel channel, IHubContext<RankHub> hubContext, BasicDeliverEventArgs eventArgs)
+    private static async Task ConsumeAsync(IChannel channel, IHubContext<RankHub> hubContext,
+        BasicDeliverEventArgs eventArgs)
     {
         await CustomDelay();
 
@@ -102,7 +103,12 @@ public class Program
         await _redis.GetDatabase().StringSetAsync("RANK-" + id, rank.ToString());
     }
 
-    private static async Task PublishRankCalculatedEventAsync(IChannel channel, IHubContext<RankHub> hubContext, string textId, double rank)
+    private static async Task PublishRankCalculatedEventAsync(
+        IChannel channel,
+        IHubContext<RankHub> hubContext,
+        string textId,
+        double rank
+    )
     {
         var eventData = new { EventType = EventType.RankCalculated.ToString(), TextId = textId, Rank = rank };
         var eventJson = JsonSerializer.Serialize(eventData);
@@ -113,7 +119,7 @@ public class Program
             routingKey: EventType.RankCalculated.ToString(),
             body: eventBody
         );
-        
+
         await hubContext.Clients.All.SendAsync("RankCalculated", new { TextId = textId, Rank = rank });
 
         Console.WriteLine("Event published");
