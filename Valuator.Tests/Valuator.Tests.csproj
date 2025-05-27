@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Valuator\Valuator.csproj" />
+      <ProjectReference Include="..\RankCalculator\RankCalculator.csproj" />
     </ItemGroup>
 
 </Project>

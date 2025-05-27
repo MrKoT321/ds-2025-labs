@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.SignalR;
 using RankCalculator.Hubs;
+using RankCalculator.Services;
 
 namespace RankCalculator;
 
@@ -46,6 +47,8 @@ public class Program
         await app.RunAsync("http://0.0.0.0:5003");
         await Task.Delay(Timeout.Infinite);
     }
+    
+    
 
     private static WebApplicationBuilder GetAppBuilder(string[] args)
     {
@@ -84,7 +87,7 @@ public class Program
         string id = Encoding.UTF8.GetString(eventArgs.Body.ToArray());
 
         string text = await GetTextFromRedis(id);
-        double rank = CalculateRank(text);
+        double rank = RankCalculator.Services.RankCalculator.CalculateRank(text);
         await SetRankInRedis(id, rank);
 
         await PublishRankCalculatedEventAsync(channel, hubContext, id, rank);
@@ -146,36 +149,5 @@ public class Program
         TimeSpan interval = TimeSpan.FromSeconds(new Random().Next(3, 15));
         Console.WriteLine($"Waiting {interval}");
         await Task.Delay(interval);
-    }
-
-    private static double CalculateRank(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            return 0.0;
-        }
-
-        int nonAlphabeticSymbols = 0;
-
-        foreach (var x in text.EnumerateRunes())
-        {
-            if (x.Utf16SequenceLength > 1)
-            {
-                ++nonAlphabeticSymbols;
-                continue;
-            }
-
-            if (!IsAlphabetic((char)x.Value))
-            {
-                ++nonAlphabeticSymbols;
-            }
-        }
-
-        return (double)nonAlphabeticSymbols / text.EnumerateRunes().Count();
-    }
-
-    private static bool IsAlphabetic(char c)
-    {
-        return c is >= 'a' and <= 'z' or >= 'A' and <= 'Z' or >= 'а' and <= 'я' or >= 'А' and <= 'Я' or 'ё' or 'Ё';
     }
 }
