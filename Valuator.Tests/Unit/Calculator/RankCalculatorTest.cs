@@ -1,5 +1,3 @@
-using RankCalculator;
-
 namespace Valuator.Tests.Calculator;
 
 public class RankCalculatorTest
