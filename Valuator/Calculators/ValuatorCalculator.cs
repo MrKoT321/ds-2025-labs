@@ -2,7 +2,7 @@ using System.Security.Cryptography;
 using System.Text;
 using StackExchange.Redis;
 
-namespace Valuator.Calculator;
+namespace Valuator.Calculators;
 
 public class ValuatorCalculator
 {
@@ -11,32 +11,6 @@ public class ValuatorCalculator
     public ValuatorCalculator(IConnectionMultiplexer redis)
     {
         _redis = redis;
-    }
-    
-    
-    public static double CalculateRank(string text)
-    {
-        if (string.IsNullOrEmpty(text))
-        {
-            return 0.0;
-        }
-
-        int nonAlphabeticSymbols = 0;
-        
-        foreach (var x in text.EnumerateRunes())
-        {
-            if (x.Utf16SequenceLength > 1)
-            {
-                ++nonAlphabeticSymbols;
-                continue;
-            }
-            if (!IsAlphabetic((char)x.Value))
-            {
-                ++nonAlphabeticSymbols;
-            }
-        }
-        
-        return (double)nonAlphabeticSymbols / text.EnumerateRunes().Count();
     }
 
     public bool CheckSimilarity(string newText)
@@ -54,12 +28,7 @@ public class ValuatorCalculator
         db.StringSet($"TEXT-BY-HASH-{textHash}", newText);
         return false;
     }
-    
-    private static bool IsAlphabetic(char c)
-    {
-        return c is >= 'a' and <= 'z' or >= 'A' and <= 'Z' or >= 'а' and <= 'я' or >= 'А' and <= 'Я' or 'ё' or 'Ё';
-    }
-    
+
     private string TextToHash(string text)
     {
         SHA256 sha256 = SHA256.Create();
@@ -68,7 +37,7 @@ public class ValuatorCalculator
         var builder = new StringBuilder();
         foreach (byte b in bytes)
         {
-            builder.Append(b.ToString("x2")); 
+            builder.Append(b.ToString("x2"));
         }
 
         return builder.ToString();

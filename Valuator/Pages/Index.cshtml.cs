@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using StackExchange.Redis;
 using System.Text;
-using Valuator.Calculator;
+using Valuator.Calculators;
 using Valuator.Services;
 
 namespace Valuator.Pages;
