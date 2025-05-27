@@ -2,7 +2,7 @@ using RankCalculator;
 
 namespace Valuator.Tests.Calculator;
 
-public class ValuatorCalculatorTest
+public class RankCalculatorTest
 {
     [Theory]
     [MemberData(nameof(CalculateRankData))]
@@ -14,7 +14,7 @@ public class ValuatorCalculatorTest
     public static IEnumerable<object[]> CalculateRankData()
     {
         yield return ["", 0];
-        yield return ["abcdefghIjklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", 0];
+        yield return ["abcdefghIjklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZабвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ", 0];
         yield return ["[]|:)(*& ", 1];
         yield return ["good text why not", 0.1765];
         yield return ["\ud83d\ude01\ud83d\ude01\ud83d\ude01", 1];
