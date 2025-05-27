@@ -15,6 +15,7 @@ public class SummaryModel : PageModel
         _redis = redis;
         Rank = NotCompleteAssessment;
         Similarity = NotCompleteAssessment;
+        Id = String.Empty;
     }
 
     public string Rank { get; set; }

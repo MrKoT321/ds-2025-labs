@@ -5,12 +5,6 @@ using System.Text.Json;
 
 public class EventsLoggerConsuemr
 {
-    private enum EventType
-    {
-        RankCalculated,
-        SimilarityCalculated
-    }
-    
     private const string QueueEventsBase = "valuator.events";
     private const string ExchangeName = "events.logger";
 
@@ -47,18 +41,18 @@ public class EventsLoggerConsuemr
             {
                 Console.WriteLine($"Failed to process message: {e.Message}");
             }
-            
+
             await channel.BasicAckAsync(eventArgs.DeliveryTag, false);
             await Task.CompletedTask;
         };
-        
+
         await channel.BasicConsumeAsync(
             queue: queueName,
             autoAck: false,
             consumer: consumer
         );
     }
-    
+
     private static async Task DeclareTopologyAsync(IChannel channel, string queueName)
     {
         await channel.ExchangeDeclareAsync(
@@ -74,7 +68,7 @@ public class EventsLoggerConsuemr
             exclusive: false,
             autoDelete: true
         );
-        
+
         await channel.QueueBindAsync(
             queue: queueName,
             routingKey: "",
@@ -89,6 +83,7 @@ public class EventsLoggerConsuemr
         {
             throw new ArgumentException("Please set environment variable INSTANCE_ID");
         }
+
         return QueueEventsBase + "." + instanceId;
     }
 }

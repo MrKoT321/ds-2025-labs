@@ -1,6 +1,6 @@
 namespace RankCalculator.Services;
 
-public static class RankCalculator
+public static class RankCalculatorService
 {
     public static double CalculateRank(string text)
     {
