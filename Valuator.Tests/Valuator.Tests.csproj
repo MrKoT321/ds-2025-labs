@@ -21,11 +21,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\RankCalculator\RankCalculator.csproj" />
+        <ProjectReference Include="..\RankCalculator\RankCalculator.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Unit\" />
+        <Folder Include="Unit\"/>
     </ItemGroup>
 
 </Project>

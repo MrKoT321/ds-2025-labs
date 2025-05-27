@@ -1,4 +1,4 @@
-namespace Valuator.Tests.Calculator;
+namespace Valuator.Tests.Unit.Calculator;
 
 public class RankCalculatorTest
 {
