@@ -99,13 +99,13 @@ namespace RankCalculator.Specs
             {
                 this.ScenarioStart();
 #line 4
-    testRunner.Given("a text with ID \"123\" exists in Redis with content \"text\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("a text with ID \"123\" exists with content \"text\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 5
     testRunner.When("a message with body \"123\" is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 6
-    testRunner.Then("the rank should be calculated and stored in Redis with ID \"123\" and Value \"0\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("the rank should be calculated and stored with ID \"123\" and Value \"0\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 7
     testRunner.And("an event should be published to RabbitMQ with routing key \"RankCalculated\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
@@ -136,13 +136,13 @@ namespace RankCalculator.Specs
             {
                 this.ScenarioStart();
 #line 11
-    testRunner.Given("a text with ID \"321\" exists in Redis with content \"|&!@#)\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+    testRunner.Given("a text with ID \"321\" exists with content \"|&!@#)\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
 #line 12
     testRunner.When("a message with body \"321\" is received", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 13
-    testRunner.Then("the rank should be calculated and stored in Redis with ID \"321\" and Value \"1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("the rank should be calculated and stored with ID \"321\" and Value \"1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 14
     testRunner.And("an event should be published to RabbitMQ with routing key \"RankCalculated\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");

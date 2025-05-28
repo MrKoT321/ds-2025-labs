@@ -11,7 +11,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ae9b9efc-dbad-436a-a572-c48c118e70c6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RankCalculator.feature" beforeDir="false" afterPath="$PROJECT_DIR$/RankCalculator.feature" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RankCalculatorTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RankCalculatorTest.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -126,7 +125,7 @@
       <updated>1748355044361</updated>
       <workItem from="1748355045493" duration="1705000" />
       <workItem from="1748370682139" duration="3877000" />
-      <workItem from="1748374594572" duration="4344000" />
+      <workItem from="1748374594572" duration="4469000" />
     </task>
     <servers />
   </component>
