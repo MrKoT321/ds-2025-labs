@@ -13,7 +13,7 @@
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=408b0ea3_002D2fef_002D4cd1_002Da71b_002Da6e4194619a4/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="ValuatorFlowFeature #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
-    &lt;TestId&gt;xUnit::55F5BC67-0609-4213-A48B-3A8BF5A6452D::net9.0::Valuator.Specs.ValuatorFlowFeature&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::55F5BC67-0609-4213-A48B-3A8BF5A6452D::net9.0::Valuator.Specs.ValuatorPagesFeature&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e6bac57d_002Dcaf0_002D4532_002Daa86_002D2bf83f97ebe4/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from Solution" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;

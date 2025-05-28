@@ -108,9 +108,12 @@ namespace Valuator.Specs
         testRunner.Then("user is redirected to the Summary page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
 #line 6
-        testRunner.And("Similarity should be \"1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+        testRunner.And("RabbitMQ should receive Similarity and Rank messages", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 7
+        testRunner.And("Similarity should be \"1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+#line 8
         testRunner.And("Rank should be \"0.1765\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }

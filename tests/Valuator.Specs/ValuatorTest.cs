@@ -18,6 +18,8 @@ public class ValuatorTest
     private HttpResponseMessage _response;
     private string? _summaryHtml;
     private string? _redirectUrl;
+    private string? _publishedId;
+    private bool? _isSimilar;
 
     private Mock<IRabbitMqService> _rabbitMock = new();
     private Mock<IConnectionMultiplexer> _redisMock = new();
@@ -34,8 +36,10 @@ public class ValuatorTest
                 services.AddSingleton(_redisMock.Object);
 
                 _rabbitMock.Setup(m => m.PublishSimilarityCalculatedEventAsync(It.IsAny<string>(), It.IsAny<bool>()))
+                    .Callback<string, bool>((_, isSimilar) => _isSimilar = isSimilar)
                     .Returns(Task.CompletedTask);
                 _rabbitMock.Setup(m => m.PublishMessageAsync(It.IsAny<string>(), It.IsAny<string>()))
+                    .Callback<string, string>((_, id) => _publishedId = id)
                     .Returns(Task.CompletedTask);
                 services.AddSingleton(_rabbitMock.Object);
             });
@@ -82,6 +86,21 @@ public class ValuatorTest
         // var location = _response.Headers.Location?.ToString();
         // Assert.NotNull(location);
         // Assert.StartsWith("/summary?id=", location);
+    }
+    
+    [Then(@"RabbitMQ should receive Similarity and Rank messages")]
+    public void ThenRabbitMqShouldReceiveMessages()
+    {
+        Assert.NotNull(_publishedId);
+        Assert.NotNull(_isSimilar);
+        
+        string prefix = "summary?id=";
+        string textId = _redirectUrl!.Substring(_redirectUrl.IndexOf(prefix, StringComparison.Ordinal) + prefix.Length);
+        _rabbitMock.Verify(m => m.PublishSimilarityCalculatedEventAsync(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        _rabbitMock.Verify(m => m.PublishMessageAsync("valuator.processing.rank", It.IsAny<string>()), Times.Once);
+        
+        Assert.Equal(_publishedId, textId);
+        Assert.True(_isSimilar);
     }
 
     [Then(@"Similarity should be ""(.*)""")]
@@ -134,6 +153,9 @@ public class ValuatorTest
                 if (key.ToString().StartsWith("RANK-")) return "0.1765";
                 return RedisValue.Null;
             });
+
+        mockDb.Setup(db => db.SetContains(It.IsAny<RedisKey>(), It.IsAny<RedisValue>(), CommandFlags.None))
+            .Returns(true);
 
         return mockDb;
     }
