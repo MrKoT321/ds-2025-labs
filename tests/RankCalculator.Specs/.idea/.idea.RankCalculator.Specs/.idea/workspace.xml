@@ -11,10 +11,6 @@
   <component name="ChangeListManager">
     <list default="true" id="ae9b9efc-dbad-436a-a572-c48c118e70c6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Valuator.Specs/Valuator.Specs.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/../Valuator.Specs/Valuator.Specs.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Valuator.Specs/Valuator.feature" beforeDir="false" afterPath="$PROJECT_DIR$/../Valuator.Specs/Valuator.feature" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Valuator.Specs/Valuator.feature.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Valuator.Specs/Valuator.feature.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Valuator.Specs/ValuatorTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Valuator.Specs/ValuatorTest.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +124,7 @@
       <updated>1748355044361</updated>
       <workItem from="1748355045493" duration="1705000" />
       <workItem from="1748370682139" duration="3877000" />
-      <workItem from="1748374594572" duration="10467000" />
+      <workItem from="1748374594572" duration="10501000" />
     </task>
     <servers />
   </component>

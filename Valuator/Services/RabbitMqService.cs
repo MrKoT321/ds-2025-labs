@@ -40,12 +40,11 @@ public class RabbitMqService(string hostName) : IRabbitMqService
 
     private async Task<IConnection> GetConnection()
     {
-        if (_rabbitMqConnection == null)
-        {
-            var factory = new ConnectionFactory { HostName = hostName };
-            _rabbitMqConnection = await factory.CreateConnectionAsync();
-        }
+        if (_rabbitMqConnection != null) return _rabbitMqConnection;
         
+        var factory = new ConnectionFactory { HostName = hostName };
+        _rabbitMqConnection = await factory.CreateConnectionAsync();
+
         return _rabbitMqConnection;
     }
 }
