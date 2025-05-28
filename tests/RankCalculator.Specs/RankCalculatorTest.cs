@@ -25,8 +25,8 @@ public class RankProcessingSteps : IDisposable
     private RankProcessor _processor;
     private BasicDeliverEventArgs _eventArgs;
     private double _calculatedRank = -1;
-    
-    private readonly string RedisTestConfiguration = "localhost:6380";
+
+    private const string RedisTestConfiguration = "localhost:6380";
 
     public RankProcessingSteps()
     {
@@ -39,8 +39,8 @@ public class RankProcessingSteps : IDisposable
         _redis.Dispose();
     }
 
-    [Given(@"a text with ID ""(.*)"" exists in Redis with content ""(.*)""")]
-    public async Task GivenATextWithIDExistsInRedisWithContent(string id, string text)
+    [Given(@"a text with ID ""(.*)"" exists with content ""(.*)""")]
+    public async Task GivenATextWithIDExistsWithContent(string id, string text)
     {
         await _redisDb.StringSetAsync("TEXT-" + id, text);
 
@@ -72,8 +72,8 @@ public class RankProcessingSteps : IDisposable
         await _processor.HandleMessageAsync(_eventArgs);
     }
 
-    [Then(@"the rank should be calculated and stored in Redis with ID ""(.*)"" and Value ""(.*)""")]
-    public async Task ThenTheRankShouldBeCalculatedAndStoredInRedisWithIDAndValue(string id, double value)
+    [Then(@"the rank should be calculated and stored with ID ""(.*)"" and Value ""(.*)""")]
+    public async Task ThenTheRankShouldBeCalculatedAndStoredWithIDAndValue(string id, double value)
     {
         _calculatedRank = await new RedisService(_redis).GetRankAsync(id);
         Assert.Equal(_calculatedRank, value);

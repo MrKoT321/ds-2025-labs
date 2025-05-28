@@ -10,34 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ae9b9efc-dbad-436a-a572-c48c118e70c6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../RankCalculator/Services/IMessageChannel.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../RankCalculator/Services/IRedisService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../RankCalculator/Services/RabbitMqMessageChannel.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../RankCalculator/Services/RankProcessor.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../RankCalculator/Services/RedisService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/indexLayout.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/projectSettingsUpdater.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RankCalculator.Specs.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RankCalculator.Specs.sln" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RankCalculator.feature" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RankCalculator.feature.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/RankCalculatorTest.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/specflow.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Valuator.Specs/Valuator.Specs.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Valuator.Specs/Valuator.Specs.sln" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Valuator.Specs/Valuator.Specs.sln.DotSettings.user" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../Valuator.Specs/ValuatorTest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../EventsLogger/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../EventsLogger/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../RankCalculator/Hubs/RankHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../RankCalculator/Hubs/RankHub.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../RankCalculator/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../RankCalculator/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../RankCalculator/Services/RankCalculator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../RankCalculator/Services/RankCalculatorService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Valuator.Tests/Unit/Calculator/RankCalculatorTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Valuator.Tests/Unit/Calculator/RankCalculatorTest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Valuator/Pages/Summary.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Valuator/Pages/Summary.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Valuator/Pages/Summary.cshtml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Valuator/Pages/Summary.cshtml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../../docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RankCalculator.feature" beforeDir="false" afterPath="$PROJECT_DIR$/RankCalculator.feature" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RankCalculatorTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/RankCalculatorTest.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,6 +36,7 @@
 }</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/316c8b6ab8d44bf7afc8adaf53949d0181000/76/dcc90b18/ClientProxyExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9aa01d993c034035bc07886c54971cc748e00/9c/495e8445/GivenAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ae85e80ef83f4a10af2b9f0d7c4551eaca708/88/9fdc79e5/PropertyInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ffb385e874f945299aa1d52a7eb20ffc7310/8c/534c596b/ServiceProviderServiceExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/23e3fdf9cf943fda3f1669218e7375dc632c465bc3e67af11390ff578b754248/BasicDeliverEventArgs.cs" root0="FORCE_HIGHLIGHTING" />
@@ -150,7 +126,7 @@
       <updated>1748355044361</updated>
       <workItem from="1748355045493" duration="1705000" />
       <workItem from="1748370682139" duration="3877000" />
-      <workItem from="1748374594572" duration="1841000" />
+      <workItem from="1748374594572" duration="4344000" />
     </task>
     <servers />
   </component>
