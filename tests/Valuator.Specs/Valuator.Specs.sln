@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valuator.Specs", "Valuator.Specs.csproj", "{55F5BC67-0609-4213-A48B-3A8BF5A6452D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valuator", "..\..\Valuator\Valuator.csproj", "{CA9DAB25-F654-4640-B85E-C4B242AD71A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valuator", "..\..\Valuator\Valuator.csproj", "{BB3B7AF3-09CB-8246-6EE6-CF385AAB4AA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
