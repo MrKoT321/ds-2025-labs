@@ -14,6 +14,9 @@ public class IndexModel : PageModel
     private readonly IConnectionMultiplexer _redis;
     private readonly IRabbitMqService _rabbitMqService;
 
+    [BindProperty(Name = "text")]
+    public string Text { get; set; } = string.Empty;
+    
     public IndexModel(ILogger<IndexModel> logger, IConnectionMultiplexer redis, IRabbitMqService rabbitMqService)
     {
         _logger = logger;
@@ -25,34 +28,39 @@ public class IndexModel : PageModel
     {
     }
 
-    public async Task<IActionResult> OnPostAsync(string text)
+    public async Task<IActionResult> OnPostAsync()
     {
-        _logger.LogDebug(text);
+        if (string.IsNullOrWhiteSpace(Text))
+        {
+            _logger.LogError("Text is null or empty in POST.");
+            return BadRequest();
+        }
+        _logger.LogDebug(Text);
 
-        string id = TextToHash(text);
+        string id = TextToHash(Text);
         IDatabase db = _redis.GetDatabase();
 
         ValuatorCalculator calculator = new ValuatorCalculator(_redis);
         string similarityKey = "SIMILARITY-" + id;
-        bool isSimilar = calculator.CheckSimilarity(text);
+        bool isSimilar = calculator.CheckSimilarity(Text);
         db.StringSet(similarityKey, isSimilar.ToString());
 
         string textKey = "TEXT-" + id;
-        await db.StringSetAsync(textKey, text);
+        await db.StringSetAsync(textKey, Text);
 
         await _rabbitMqService.PublishSimilarityCalculatedEventAsync(id, isSimilar);
 
         await _rabbitMqService.PublishMessageAsync("valuator.processing.rank", id);
 
-        Console.WriteLine($"text: {text}");
+        Console.WriteLine($"Text: {Text}");
 
         return Redirect($"summary?id={id}");
     }
 
-    private string TextToHash(string text)
+    private string TextToHash(string Text)
     {
         SHA256 sha256 = SHA256.Create();
-        byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(text));
+        byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(Text));
 
         var builder = new StringBuilder();
         foreach (byte b in bytes)

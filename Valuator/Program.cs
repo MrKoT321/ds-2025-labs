@@ -19,11 +19,23 @@ public class Program
 
         var rabbitSection = builder.Configuration.GetSection("RabbitMQ");
         var hostName = rabbitSection.GetValue<string>("HostName");
-        var factory = new ConnectionFactory { HostName = hostName! };
-        var rabbitMqConnection = await factory.CreateConnectionAsync();
-        builder.Services.AddSingleton(rabbitMqConnection);
 
-        builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
+        builder.Services.AddSingleton<IConnectionFactory>(_ => new ConnectionFactory { HostName = hostName! });
+
+        // builder.Services.AddSingleton<IConnection>(async (sp) =>
+        // {
+            // var factory = sp.GetRequiredService<IConnectionFactory>();
+            // return await factory.CreateConnectionAsync();
+        // });
+        
+        RabbitMqService rabbitMqService = new(hostName!);
+        builder.Services.AddSingleton<IRabbitMqService>(rabbitMqService);
+
+        // var factory = new ConnectionFactory { HostName = hostName! };
+        // var rabbitMqConnection = await factory.CreateConnectionAsync();
+        // builder.Services.AddSingleton(rabbitMqConnection);
+
+        // builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 
         var app = builder.Build();
 
@@ -41,6 +53,8 @@ public class Program
         app.UseAuthorization();
 
         app.MapRazorPages();
+        
+        builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
         app.Run();
     }

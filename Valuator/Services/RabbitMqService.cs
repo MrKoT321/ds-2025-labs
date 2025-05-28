@@ -4,12 +4,15 @@ using RabbitMQ.Client;
 
 namespace Valuator.Services;
 
-public class RabbitMqService(IConnection rabbitMqConnection) : IRabbitMqService
+public class RabbitMqService(string hostName) : IRabbitMqService
 {
+    private IConnection? _rabbitMqConnection;
+    
     private const string ExchangeName = "events.logger";
 
     public async Task PublishMessageAsync(string queueName, string message)
     {
+        IConnection rabbitMqConnection = await GetConnection();
         await using var channel = await rabbitMqConnection.CreateChannelAsync();
         await channel.QueueDeclareAsync(queueName, true, false, false);
 
@@ -21,6 +24,7 @@ public class RabbitMqService(IConnection rabbitMqConnection) : IRabbitMqService
 
     public async Task PublishSimilarityCalculatedEventAsync(string textId, bool isSimilar)
     {
+        IConnection rabbitMqConnection = await GetConnection();
         await using var channel = await rabbitMqConnection.CreateChannelAsync();
         await channel.ExchangeDeclareAsync(ExchangeName, ExchangeType.Fanout, true);
 
@@ -32,5 +36,16 @@ public class RabbitMqService(IConnection rabbitMqConnection) : IRabbitMqService
         var body = Encoding.UTF8.GetBytes(eventJson);
 
         await channel.BasicPublishAsync(ExchangeName, EventType.SimilarityCalculated.ToString(), body);
+    }
+
+    private async Task<IConnection> GetConnection()
+    {
+        if (_rabbitMqConnection == null)
+        {
+            var factory = new ConnectionFactory { HostName = hostName };
+            _rabbitMqConnection = await factory.CreateConnectionAsync();
+        }
+        
+        return _rabbitMqConnection;
     }
 }
