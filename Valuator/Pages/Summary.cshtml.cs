@@ -1,18 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using StackExchange.Redis;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Valuator.Services;
 
 namespace Valuator.Pages;
 
+[Authorize]
 public class SummaryModel : PageModel
 {
     public const string NotCompleteAssessment = "в процессе...";
     private readonly ILogger<SummaryModel> _logger;
-    private readonly IConnectionMultiplexer _redis;
+    private readonly IStorageService _storageService;
 
-    public SummaryModel(ILogger<SummaryModel> logger, IConnectionMultiplexer redis)
+    public SummaryModel(ILogger<SummaryModel> logger, IStorageService storageService)
     {
         _logger = logger;
-        _redis = redis;
+        _storageService = storageService;
         Rank = NotCompleteAssessment;
         Similarity = NotCompleteAssessment;
         Id = String.Empty;
@@ -22,18 +26,27 @@ public class SummaryModel : PageModel
     public string Similarity { get; set; }
     public string Id { get; private set; }
 
-    public void OnGet(string id)
+    public IActionResult OnGet(string id)
     {
+        var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var textOwnerId = _storageService.GetUserIdByTextId(id);
+        Console.WriteLine($"textOwnerId: {textOwnerId}");
+        Console.WriteLine($"UserId: {currentUserId}");
+
+        if (textOwnerId == null || textOwnerId != currentUserId)
+        {
+            return RedirectToPage("/Index");
+        }
+        
         Id = id;
 
         _logger.LogDebug(id);
-        IDatabase db = _redis.GetDatabase();
 
         string similarityKey = "SIMILARITY-" + id;
-        string? similarityStr = db.StringGet(similarityKey);
+        string? similarityStr = _storageService.GetById(Id, similarityKey);
         
         string rankKey = "RANK-" + id;
-        string? rankValue = db.StringGet(rankKey);
+        string? rankValue = _storageService.GetById(Id, rankKey);
 
         if (!string.IsNullOrEmpty(similarityStr))
         {
@@ -44,5 +57,7 @@ public class SummaryModel : PageModel
         {
             Rank = rankValue;
         }
+
+        return Page();
     }
 }

@@ -1,31 +1,30 @@
 using System.Security.Cryptography;
 using System.Text;
 using StackExchange.Redis;
+using Valuator.Services;
 
 namespace Valuator.Calculators;
 
 public class ValuatorCalculator
 {
-    private readonly IConnectionMultiplexer _redis;
+    private readonly IStorageService _storageService;
 
-    public ValuatorCalculator(IConnectionMultiplexer redis)
+    public ValuatorCalculator(IStorageService storageService)
     {
-        _redis = redis;
+        _storageService = storageService;
     }
 
-    public bool CheckSimilarity(string newText)
+    public bool CheckSimilarity(string newText, string id)
     {
-        IDatabase db = _redis.GetDatabase();
-
         string textHash = TextToHash(newText);
-        bool isDuplicate = db.SetContains("HASH-TEXTS", textHash);
+        Console.WriteLine(textHash);
+        bool isDuplicate = _storageService.SaveContainsById("HASH-TEXTS", id, textHash);
         if (isDuplicate)
         {
             return true;
         }
 
-        db.SetAdd("HASH-TEXTS", textHash);
-        db.StringSet($"TEXT-BY-HASH-{textHash}", newText);
+        _storageService.SaveById($"TEXT-BY-HASH-{textHash}", id, textHash);
         return false;
     }
 

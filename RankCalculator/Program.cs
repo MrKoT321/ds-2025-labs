@@ -1,8 +1,4 @@
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using StackExchange.Redis;
-using System.Text;
-using System.Text.Json;
 using Microsoft.AspNetCore.SignalR;
 using RankCalculator.Hubs;
 using RankCalculator.Services;
@@ -13,19 +9,23 @@ public class Program
 {
     private const string QueueName = "valuator.processing.rank";
     private const string ExchangeName = "events.logger";
-    private const string RedisConnectionString = "redis:6379";
 
     public static async Task Main(string[] args)
     {
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+        
         var builder = GetAppBuilder(args);
 
-        builder.Services.AddSingleton<IRedisService>(_ =>
+        builder.Services.AddSingleton<IRedisService>(new RedisService());
+        builder.Services.AddSingleton<IConnectionFactory>(_ => new ConnectionFactory
         {
-            var multiplexer = ConnectionMultiplexer.Connect(RedisConnectionString);
-            return new RedisService(multiplexer);
+            HostName = configuration["RabbitMQ:Hostname"]!,
+            UserName = configuration["RabbitMQ:UserName"]!,
+            Password = configuration["RabbitMQ:Password"]!
         });
-
-        builder.Services.AddSingleton<IConnectionFactory>(_ => new ConnectionFactory { HostName = "rabbitmq" });
 
         var app = builder.Build();
         var rabbitFactory = app.Services.GetRequiredService<IConnectionFactory>();
@@ -45,7 +45,7 @@ public class Program
 
         await messageChannel.ConsumeAsync(processor.HandleMessageAsync);
 
-        await app.RunAsync("http://0.0.0.0:5003");
+        await app.RunAsync("http://localhost:5003");
         await Task.Delay(Timeout.Infinite);
     }
 

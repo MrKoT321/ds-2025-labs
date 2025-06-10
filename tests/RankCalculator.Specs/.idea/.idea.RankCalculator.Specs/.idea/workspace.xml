@@ -10,7 +10,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ae9b9efc-dbad-436a-a572-c48c118e70c6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Valuator/Services/IStorageService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../Valuator/Services/RedisStorageService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../RankCalculator/Services/IRedisService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../RankCalculator/Services/IRedisService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../RankCalculator/Services/RankProcessor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../RankCalculator/Services/RankProcessor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../RankCalculator/Services/RedisService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../RankCalculator/Services/RedisService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Valuator.Tests/Unit/Calculator/RankCalculatorTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Valuator.Tests/Unit/Calculator/RankCalculatorTest.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Valuator/Calculators/ValuatorCalculator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Valuator/Calculators/ValuatorCalculator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Valuator/Pages/Index.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Valuator/Pages/Index.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Valuator/Pages/Index.cshtml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Valuator/Pages/Index.cshtml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Valuator/Pages/Summary.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Valuator/Pages/Summary.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Valuator/Pages/Summary.cshtml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Valuator/Pages/Summary.cshtml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Valuator/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Valuator/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/../../docker-compose.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.RankCalculator.Specs/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Valuator.Specs/Valuator.Specs.sln.DotSettings.user" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Valuator.Specs/Valuator.feature" beforeDir="false" afterPath="$PROJECT_DIR$/../Valuator.Specs/Valuator.feature" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +56,14 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/23e3fdf9cf943fda3f1669218e7375dc632c465bc3e67af11390ff578b754248/BasicDeliverEventArgs.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/93b441a9e8201c5bdfa1b1fdc8061a77b86ccbb8566d7bae85036aba8c618f7/IDatabaseAsync.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/.nuget/packages/microsoft.net.test.sdk/17.8.0/build/netcoreapp3.1/Microsoft.NET.Test.Sdk.Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../RankCalculator/Hubs/RankHub.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../RankCalculator/Program.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../RankCalculator/Services/IMessageChannel.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../RankCalculator/Services/IRedisService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../RankCalculator/Services/RabbitMqMessageChannel.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../RankCalculator/Services/RankCalculatorService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../RankCalculator/Services/RankProcessor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../../RankCalculator/Services/RedisService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file:///usr/lib/dotnet/sdk/9.0.106/Microsoft.Common.CurrentVersion.targets" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
@@ -125,6 +149,7 @@
       <workItem from="1748355045493" duration="1705000" />
       <workItem from="1748370682139" duration="3877000" />
       <workItem from="1748374594572" duration="10501000" />
+      <workItem from="1749047057408" duration="1846000" />
     </task>
     <servers />
   </component>

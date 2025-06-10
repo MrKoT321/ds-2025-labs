@@ -4,10 +4,10 @@ using RabbitMQ.Client;
 
 namespace Valuator.Services;
 
-public class RabbitMqService(string hostName) : IRabbitMqService
+public class RabbitMqService(IConfigurationRoot configuration) : IRabbitMqService
 {
     private IConnection? _rabbitMqConnection;
-    
+
     private const string ExchangeName = "events.logger";
 
     public async Task PublishMessageAsync(string queueName, string message)
@@ -42,7 +42,12 @@ public class RabbitMqService(string hostName) : IRabbitMqService
     {
         if (_rabbitMqConnection != null) return _rabbitMqConnection;
         
-        var factory = new ConnectionFactory { HostName = hostName };
+        var factory = new ConnectionFactory
+        {
+            HostName = configuration["RabbitMQ:Hostname"]!,
+            UserName = configuration["RabbitMQ:UserName"]!,
+            Password = configuration["RabbitMQ:Password"]!
+        };
         _rabbitMqConnection = await factory.CreateConnectionAsync();
 
         return _rabbitMqConnection;

@@ -22,6 +22,7 @@
             const hubConnection = new signalR.HubConnectionBuilder().withUrl("http://localhost:5003/rankCalculated").build()
 
             hubConnection.on("RankCalculated", function (data) {
+                console.log(data)
                 if (data.textId === id) {
                     document.getElementById("rank").innerHTML = "Оценка содержания: " + data.rank
                     hubConnection.stop()

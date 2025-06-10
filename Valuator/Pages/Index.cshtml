@@ -6,10 +6,26 @@
 
 <div class="text-center">
     <form method="post">
-        <div class="col-2">Текст для оценки:</div>
-        <div class="col-10">
-            <textarea name="text" rows="5" cols="50"></textarea>
-            <input type="submit" />
+        <div class="row">
+            <div class="col-2">
+                <label for="country">Выберите страну:</label>
+            </div>
+            <div class="col-2">
+                <select name="country" class="form-control" id="country">
+                    <option value="RU">Россия</option>
+                    <option value="EU">Франция</option>
+                    <option value="EU">Германия</option>
+                    <option value="Asia">ОАЭ</option>
+                    <option value="Asia">Индия</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px">
+            <div class="col-2">Текст для оценки:</div>
+            <div class="col-5">
+                <textarea name="text" rows="5" cols="50"></textarea>
+                <input type="submit"/>
+            </div>
         </div>
     </form>
 </div>

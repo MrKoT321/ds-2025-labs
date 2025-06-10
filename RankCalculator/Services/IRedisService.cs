@@ -2,7 +2,6 @@ namespace RankCalculator.Services;
 
 public interface IRedisService
 {
-    Task<string> GetTextAsync(string id);
-    Task SetRankAsync(string id, double rank);
-    Task<double> GetRankAsync(string id);
+    Task<string> GetTextAsyncByShardKey(string id, string shardKey);
+    Task SetRankAsyncSharded(string id, double rank, string shardKey);
 }

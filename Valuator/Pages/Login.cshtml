@@ -1,0 +1,133 @@
+@page
+@model Valuator.Pages.LoginModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <title>Вход</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --primary-hover: #3b78c2;
+            --background-color: #f7f9fc;
+            --card-background: #ffffff;
+            --input-border: #d1d9e6;
+            --text-color: #333;
+            --error-color: #d9534f;
+            --border-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-container {
+            background-color: var(--card-background);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            width: 360px;
+            transition: all 0.3s ease;
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--input-border);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .register-link {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .register-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            color: var(--error-color);
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h2>Вход</h2>
+
+    @if (Model.ErrorMessage != null)
+    {
+        <p class="error">@Model.ErrorMessage</p>
+    }
+
+    <form method="post">
+        <input name="Username" type="text" placeholder="Имя пользователя" required />
+        <input name="Password" type="password" placeholder="Пароль" required />
+        <button type="submit">Войти</button>
+    </form>
+
+    <div class="register-link">
+        <p>Нет аккаунта? <a asp-page="/Register">Зарегистрироваться</a></p>
+    </div>
+</div>
+</body>
+</html>

@@ -11,8 +11,18 @@ public class EventsLoggerConsuemr
     public static async Task Main(string[] args)
     {
         Console.WriteLine("Consumer started");
+        
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
 
-        var factory = new ConnectionFactory { HostName = "rabbitmq" };
+        var factory = new ConnectionFactory
+        {
+            HostName = configuration["RabbitMQ:Hostname"]!,
+            UserName = configuration["RabbitMQ:UserName"]!,
+            Password = configuration["RabbitMQ:Password"]!
+        };
 
         var connection = await factory.CreateConnectionAsync();
         var channel = await connection.CreateChannelAsync();

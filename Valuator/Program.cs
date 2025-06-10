@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using RabbitMQ.Client;
 using StackExchange.Redis;
 using Valuator.Services;
@@ -12,30 +13,32 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddRazorPages();
+        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Login";
+                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                options.SlidingExpiration = true;
+                options.AccessDeniedPath = "/Error";
+            });
 
-        var redisConfig = builder.Configuration.GetSection("Redis");
+        var configuration = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
         builder.Services.AddSingleton<IConnectionMultiplexer>(_ =>
-            ConnectionMultiplexer.Connect(redisConfig["ConnectionString"]!));
-
-        var rabbitSection = builder.Configuration.GetSection("RabbitMQ");
-        var hostName = rabbitSection.GetValue<string>("HostName");
-
-        builder.Services.AddSingleton<IConnectionFactory>(_ => new ConnectionFactory { HostName = hostName! });
-
-        // builder.Services.AddSingleton<IConnection>(async (sp) =>
-        // {
-            // var factory = sp.GetRequiredService<IConnectionFactory>();
-            // return await factory.CreateConnectionAsync();
-        // });
+            ConnectionMultiplexer.Connect(configuration["Redis:ConnectionString"]!));
+        builder.Services.AddScoped<IStorageService, RedisStorageService>();
+        builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddSingleton<IConnectionFactory>(_ => new ConnectionFactory
+        {
+            HostName = configuration["RabbitMQ:Hostname"]!,
+            UserName = configuration["RabbitMQ:UserName"]!,
+            Password = configuration["RabbitMQ:Password"]!
+        });
         
-        RabbitMqService rabbitMqService = new(hostName!);
+        RabbitMqService rabbitMqService = new(configuration);
         builder.Services.AddSingleton<IRabbitMqService>(rabbitMqService);
-
-        // var factory = new ConnectionFactory { HostName = hostName! };
-        // var rabbitMqConnection = await factory.CreateConnectionAsync();
-        // builder.Services.AddSingleton(rabbitMqConnection);
-
-        // builder.Services.AddSingleton<IRabbitMqService, RabbitMqService>();
 
         var app = builder.Build();
 
@@ -50,12 +53,11 @@ public class Program
 
         app.UseRouting();
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapRazorPages();
         
-        builder.WebHost.UseUrls("http://0.0.0.0:8080");
-
         app.Run();
     }
 }
